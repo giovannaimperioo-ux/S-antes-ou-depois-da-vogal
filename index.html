@@ -1,5 +1,4 @@
-# Escrevendo o código HTML completo para o jogo interativo do Lucas
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +7,8 @@ html_content = """<!DOCTYPE html>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
+            background-color: #0f172a; 
+            color: #f8fafc;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -19,57 +19,61 @@ html_content = """<!DOCTYPE html>
         }
 
         .game-container {
-            background-color: white;
+            background-color: #1e293b;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             padding: 30px;
             width: 90%;
             max-width: 600px;
             text-align: center;
-            border: 4px solid #1e3a8a;
+            border: 4px solid #3b82f6;
         }
 
         h1 {
-            color: #1e3a8a;
-            font-size: 24px;
+            color: #3b82f6;
+            font-size: 26px;
             margin-top: 0;
+            letter-spacing: 1px;
         }
 
         .score-board {
             font-size: 18px;
             font-weight: bold;
-            color: #4b5563;
+            color: #ffffff;
             margin-bottom: 20px;
-            background-color: #e0f2fe;
-            padding: 10px;
-            border-radius: 10px;
+            background-color: #1e3a8a;
+            padding: 10px 20px;
+            border-radius: 50px;
             display: inline-block;
         }
 
         .image-container {
-            background-color: #f8fafc;
-            border: 3px dashed #cbd5e1;
+            background-color: #334155;
+            border: 3px dashed #475569;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 25px;
-            min-height: 180px;
+            min-height: 260px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .svg-icon {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 10px;
+        .game-image {
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
         .word-hint {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: bold;
-            color: #334155;
-            letter-spacing: 2px;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         .btn-container {
@@ -87,160 +91,140 @@ html_content = """<!DOCTYPE html>
         .btn {
             border: none;
             border-radius: 12px;
-            padding: 18px 10px;
-            font-size: 16px;
+            padding: 20px 10px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: transform 0.1s, background-color 0.2s;
             color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .btn:active {
             transform: scale(0.98);
         }
 
-        .btn-after {
-            background-color: #2563eb; /* Azul */
-        }
-
-        .btn-after:hover {
-            background-color: #1d4ed8;
-        }
-
         .btn-before {
-            background-color: #16a34a; /* Verde */
+            background-color: #2563eb; /* Azul */
+            color: white;
         }
 
         .btn-before:hover {
-            background-color: #15803d;
+            background-color: #1d4ed8;
+        }
+
+        .btn-after {
+            background-color: #eab308; /* Amarelo */
+            color: #0f172a; /* Texto escuro para dar contraste no amarelo */
+        }
+
+        .btn-after:hover {
+            background-color: #ca8a04;
         }
 
         .feedback {
             margin-top: 20px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            min-height: 30px;
-            padding: 10px;
+            min-height: 40px;
+            padding: 15px;
             border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
         .success {
-            color: #15803d;
-            background-color: #dcfce7;
+            color: #4ade80;
+            background-color: #064e3b;
+            border: 2px solid #059669;
         }
 
         .error {
-            color: #b91c1c;
-            background-color: #fee2e2;
+            color: #f87171;
+            background-color: #7f1d1d;
+            border: 2px solid #b91c1c;
+        }
+
+        .emoji-anim {
+            font-size: 40px;
         }
 
         .hidden {
             display: none !important;
         }
 
-        .restart-btn {
-            background-color: #4b5563;
+        .action-btn {
+            background-color: #ef4444;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             margin-top: 20px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:hover {
+            background-color: #dc2626;
         }
     </style>
 </head>
 <body>
 
     <div class="game-container">
-        <h1>🕵️‍♂️ DETETIVE LUCAS: O SEGREDO DO S</h1>
-        <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">10</span></div>
+        <h1>🕵️‍♂️ DETETIVE LUCAS: MISSÃO S</h1>
+        <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">16</span></div>
         
         <div class="image-container" id="game-box">
-            <div id="image-graphic"></div>
-            <div class="word-hint" id="word-display">__TA</div>
+            <img id="game-picture" class="game-image" src="" alt="Pista Visual">
+            <div class="word-hint" id="word-display">__</div>
         </div>
 
         <div class="btn-container" id="action-buttons">
-            <button class="btn btn-after" onclick="checkAnswer('after')">🟦 S DEPOIS da Vogal<br><small>(AS, ES, IS, OS, US)</small></button>
-            <button class="btn btn-before" onclick="checkAnswer('before')">🟩 S ANTES da Vogal<br><small>(SA, SE, SI, SO, SU)</small></button>
+            <button class="btn btn-before" onclick="checkAnswer('before')">🟦 S antes da vogal</button>
+            <button class="btn btn-after" onclick="checkAnswer('after')">🟨 S depois da vogal</button>
         </div>
 
         <div id="feedback-box" class="feedback hidden"></div>
-        <button id="next-btn" class="restart-btn hidden" onclick="nextQuestion()">Próxima Pista ➡️</button>
-        <button id="restart-btn" class="restart-btn hidden" onclick="resetGame()">Jogar Novamente 🔄</button>
+        <button id="next-btn" class="action-btn hidden" onclick="nextQuestion()">Próxima Pista ➡️</button>
+        <button id="restart-btn" class="action-btn hidden" onclick="resetGame()">Jogar Novamente 🔄</button>
     </div>
 
     <script>
-        // Banco de dados de imagens em formato SVG para funcionar 100% offline e sem links quebrados
+        // Banco de dados atualizado com as novas palavras e imagens temáticas 3D de alta qualidade
         const dataset = [
-            {
-                word: "ESTRELA",
-                display: "__TRELA",
-                type: "after",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#facc15"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192L12 .587z"/></svg>`
-            },
-            {
-                word: "SAPO",
-                display: "__PO",
-                type: "before",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#22c55e"><path d="M12 2c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l2.79-2.79C10.03 18.64 11 19 12 19s1.97-.36 2.45-.98l2.79 2.79c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-.62-2.79C19.26 15.07 20 13.12 20 11c0-4.97-4.03-9-9-9zm-3 7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>`
-            },
-            {
-                word: "ESCADA",
-                display: "__CADA",
-                type: "after",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#94a3b8"><path d="M19 2h-3v3h-3v3h-3v3H7v3H4v5h16V2h-1zm-2 14h-3v-3h3v3zm-3-3h-3v-3h3v3zm-3-3H8V8h3v3z"/></svg>`
-            },
-            {
-                word: "SINO",
-                display: "__NO",
-                type: "before",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#eab308"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>`
-            },
-            {
-                word: "ASTRO",
-                display: "__TRO",
-                type: "after",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm1-15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-1 3a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1z"/></svg>`
-            },
-            {
-                word: "SOCO",
-                display: "__CO",
-                type: "before",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#f43f5e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`
-            },
-            {
-                word: "ESPELHO",
-                display: "__PELHO",
-                type: "after",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>`
-            },
-            {
-                word: "SUCO",
-                display: "__CO",
-                type: "before",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#f97316"><path d="M10 21.008c0 .548.448.992 1 .992h2c.552 0 1-.444 1-.992V11h-4v10.008zM19.657 4.11L17.55 3.42l-1.38 4.24-4.24-1.38-.69 2.11 4.24 1.38-1.38 4.24 2.11.69 1.38-4.24 4.24 1.38.69-2.11-4.24-1.38 1.38-4.24z"/></svg>`
-            },
-            {
-                word: "ISQUEIRO",
-                display: "__QUEIRO",
-                type: "after",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#ef4444"><path d="M17 10H7v11c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V10zm-3-6h-4c-.55 0-1 .45-1 1v3h6V5c0-.55-.45-1-1-1z"/></svg>`
-            },
-            {
-                word: "SOFÁ",
-                display: "__FÁ",
-                type: "before",
-                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#78350f"><path d="M22 10V7c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v3c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2z"/></svg>`
-            }
+            // S ANTES DA VOGAL
+            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/frog.png" },
+            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/orange-juice.png" },
+            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://img.icons8.com/isometric/512/7.png" },
+            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://img.icons8.com/isometric/512/shopping-bag.png" },
+            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/sneakers.png" },
+            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/bell.png" },
+            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://img.icons8.com/isometric/512/salad.png" },
+            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://img.icons8.com/isometric/512/ice-cream-cone.png" },
+            
+            // S DEPOIS DA VOGAL
+            { word: "ASFALTO", display: "A__FALTO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/road.png" },
+            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/ladder.png" },
+            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/mirror.png" },
+            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/lighter.png" },
+            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/bone.png" },
+            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/oyster.png" },
+            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/beetle-car.png" },
+            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://img.icons8.com/isometric/512/pie.png" }
         ];
+
+        // Embaralha as pistas para o Lucas não decorar a ordem (estímulo de flexibilidade cognitiva)
+        dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
         let score = 0;
 
-        const imageGraphic = document.getElementById("image-graphic");
+        const gamePicture = document.getElementById("game-picture");
         const wordDisplay = document.getElementById("word-display");
         const scoreDisplay = document.getElementById("score");
         const feedbackBox = document.getElementById("feedback-box");
@@ -257,7 +241,7 @@ html_content = """<!DOCTYPE html>
             actionButtons.classList.remove("hidden");
             
             const currentItem = dataset[currentIndex];
-            imageGraphic.innerHTML = currentItem.svg;
+            gamePicture.src = currentItem.imgUrl;
             wordDisplay.innerText = currentItem.display;
         }
 
@@ -266,31 +250,32 @@ html_content = """<!DOCTYPE html>
             feedbackBox.classList.remove("hidden");
             actionButtons.classList.add("hidden");
 
-            // Efeito de Áudio nativo do navegador para o Lucas ter feedback sensorial instantâneo
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
             if (selectedType === currentItem.type) {
                 score++;
                 scoreDisplay.innerText = score;
-                feedbackBox.innerText = `🎉 Excelente, Detetive Lucas! A palavra é ${currentItem.word}.`;
+                feedbackBox.innerHTML = `<span class="emoji-anim">🙌👏</span><span>Muito bem, você arrasou! A palavra é ${currentItem.word}.</span>`;
                 feedbackBox.className = "feedback success";
                 
-                // Som de acerto (agudo e alegre)
-                playTone(audioCtx, 523.25, "sine", 0.15); // C5
-                setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.3), 150); // E5
+                // Som de comemoração (Notas alegres ascendentes)
+                playTone(audioCtx, 523.25, "sine", 0.1); 
+                setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.1), 100); 
+                setTimeout(() => playTone(audioCtx, 783.99, "sine", 0.3), 200); 
             } else {
-                feedbackBox.innerText = `🔍 Quase lá! O correto para ${currentItem.word} é o S ${currentItem.type === 'after' ? 'DEPOIS' : 'ANTES'} da vogal.`;
+                feedbackBox.innerHTML = `<span class="emoji-anim">😢😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
                 
-                // Som de erro (grave e curto)
-                playTone(audioCtx, 220, "sawtooth", 0.3); // A3
+                // Som de tristeza (Frequência descendente)
+                playTone(audioCtx, 293.66, "triangle", 0.2); 
+                setTimeout(() => playTone(audioCtx, 220.00, "triangle", 0.4), 200); 
             }
 
             if (currentIndex < dataset.length - 1) {
                 nextBtn.classList.remove("hidden");
             } else {
                 restartBtn.classList.remove("hidden");
-                feedbackBox.innerText += `\n\n🏆 Fim da Missão! Você desvendou ${score} de ${dataset.length} pistas!`;
+                feedbackBox.innerHTML += `<br><br>🏆 <strong>Missão Cumprida!</strong> Você resolveu ${score} de ${dataset.length} enigmas!`;
             }
         }
 
@@ -300,7 +285,7 @@ html_content = """<!DOCTYPE html>
                 let gain = ctx.createGain();
                 osc.type = type;
                 osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -319,18 +304,11 @@ html_content = """<!DOCTYPE html>
             score = 0;
             scoreDisplay.innerText = score;
             restartBtn.classList.add("hidden");
+            dataset.sort(() => Math.random() - 0.5); // Re-embaralha para uma nova partida
             loadQuestion();
         }
 
-        // Inicializa o jogo do Lucas
         loadQuestion();
     </script>
 </body>
 </html>
-"""
-
-# Gravando o arquivo HTML no sistema local para disponibilização
-file_name = "Missao_Detetive_Lucas_S.html"
-with open(file_name, "w", encoding="utf-8") as f:
-    f.write(html_content)
-print(f"Arquivo {file_name} gerado com sucesso!")
