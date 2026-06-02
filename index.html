@@ -61,11 +61,12 @@
         }
 
         .game-image {
-            width: 180px;
+            width: 200px;
             height: 180px;
-            object-fit: contain;
-            border-radius: 10px;
+            object-fit: cover;
+            border-radius: 12px;
             margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .word-hint {
@@ -96,7 +97,6 @@
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
-            color: white;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
@@ -115,7 +115,7 @@
 
         .btn-after {
             background-color: #eab308; /* Amarelo */
-            color: #0f172a; /* Texto escuro para dar contraste no amarelo */
+            color: #0f172a; 
         }
 
         .btn-after:hover {
@@ -195,30 +195,29 @@
     </div>
 
     <script>
-        // Banco de dados atualizado com as novas palavras e imagens temáticas 3D de alta qualidade
+        // Banco de dados atualizado com fotos reais e ilustrações nítidas abertas (Unsplash)
         const dataset = [
             // S ANTES DA VOGAL
-            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/frog.png" },
-            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/orange-juice.png" },
-            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://img.icons8.com/isometric/512/7.png" },
-            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://img.icons8.com/isometric/512/shopping-bag.png" },
-            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/sneakers.png" },
-            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://img.icons8.com/isometric/512/bell.png" },
-            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://img.icons8.com/isometric/512/salad.png" },
-            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://img.icons8.com/isometric/512/ice-cream-cone.png" },
+            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://images.unsplash.com/photo-1579380656108-f98e4df4ea62?w=400&auto=format&fit=crop&q=60" },
+            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&auto=format&fit=crop&q=60" },
+            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://images.unsplash.com/photo-1595841696677-5489e3540c1f?w=400&auto=format&fit=crop&q=60" },
+            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&auto=format&fit=crop&q=60" },
+            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=60" },
+            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://images.unsplash.com/photo-1606913160714-d0794354363f?w=400&auto=format&fit=crop&q=60" },
+            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&auto=format&fit=crop&q=60" },
+            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://images.unsplash.com/photo-1501443712940-3de7704645f0?w=400&auto=format&fit=crop&q=60" },
             
             // S DEPOIS DA VOGAL
-            { word: "ASFALTO", display: "A__FALTO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/road.png" },
-            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/ladder.png" },
-            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/mirror.png" },
-            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/lighter.png" },
-            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://img.icons8.com/isometric/512/bone.png" },
-            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/oyster.png" },
-            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://img.icons8.com/isometric/512/beetle-car.png" },
-            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://img.icons8.com/isometric/512/pie.png" }
+            { word: "ASFALTO", display: "A__FALTO", type: "after", imgUrl: "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=400&auto=format&fit=crop&q=60" },
+            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://images.unsplash.com/photo-1601598851547-4302969d0614?w=400&auto=format&fit=crop&q=60" },
+            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=400&auto=format&fit=crop&q=60" },
+            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://images.unsplash.com/photo-1556938212-0050e057df24?w=400&auto=format&fit=crop&q=60" },
+            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://images.unsplash.com/photo-1582719188393-bb71ca45dbb9?w=400&auto=format&fit=crop&q=60" },
+            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&auto=format&fit=crop&q=60" },
+            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://images.unsplash.com/photo-1526402919747-d51624b51829?w=400&auto=format&fit=crop&q=60" },
+            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://images.unsplash.com/photo-1608039755401-742074f0548d?w=400&auto=format&fit=crop&q=60" }
         ];
 
-        // Embaralha as pistas para o Lucas não decorar a ordem (estímulo de flexibilidade cognitiva)
         dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
@@ -258,7 +257,6 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">🙌👏</span><span>Muito bem, você arrasou! A palavra é ${currentItem.word}.</span>`;
                 feedbackBox.className = "feedback success";
                 
-                // Som de comemoração (Notas alegres ascendentes)
                 playTone(audioCtx, 523.25, "sine", 0.1); 
                 setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.1), 100); 
                 setTimeout(() => playTone(audioCtx, 783.99, "sine", 0.3), 200); 
@@ -266,7 +264,6 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">😢😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
                 
-                // Som de tristeza (Frequência descendente)
                 playTone(audioCtx, 293.66, "triangle", 0.2); 
                 setTimeout(() => playTone(audioCtx, 220.00, "triangle", 0.4), 200); 
             }
@@ -304,7 +301,7 @@
             score = 0;
             scoreDisplay.innerText = score;
             restartBtn.classList.add("hidden");
-            dataset.sort(() => Math.random() - 0.5); // Re-embaralha para uma nova partida
+            dataset.sort(() => Math.random() - 0.5); 
             loadQuestion();
         }
 
@@ -312,3 +309,4 @@
     </script>
 </body>
 </html>
+    
