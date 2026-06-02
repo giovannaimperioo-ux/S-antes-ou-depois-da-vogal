@@ -61,8 +61,8 @@
         }
 
         .game-image {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             object-fit: contain;
             border-radius: 12px;
             margin-bottom: 15px;
@@ -194,30 +194,29 @@
     </div>
 
     <script>
-        // Banco de dados com os links diretos das imagens do Pinterest fornecidas por você
+        // Imagens hospedadas em servidor livre e sem bloqueio de segurança
         const dataset = [
             // S ANTES DA VOGAL (Botão Azul)
-            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://i.pinimg.com/736x/01/9b/ef/019bef596ef8b3353b3bf7b50db61b84.jpg" },
-            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://i.pinimg.com/736x/9b/9a/c0/9b9ac07f3547b7440498a9645f65342a.jpg" },
-            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://i.pinimg.com/736x/87/42/fa/8742fa41775f0a0d4db0264b38d38827.jpg" },
-            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://i.pinimg.com/736x/5b/c2/f0/5bc2f00a4d46bd7aee809bc489f07a7b.jpg" },
-            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://i.pinimg.com/736x/04/b8/b6/04b8b60991b19a1fb30c1ce8547ca543.jpg" },
-            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://i.pinimg.com/736x/67/60/a4/6760a4f6cf7bc8e2029ec2e99d214646.jpg" },
-            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://i.pinimg.com/736x/bd/6d/81/bd6d8175d9e5be0267756f7efcc24949.jpg" },
-            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://i.pinimg.com/736x/05/cf/14/05cf1445b23d06eb18fefb6d19456bb0.jpg" },
+            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://i.imgur.com/eB399Mv.png" },
+            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://i.imgur.com/vHq4R8t.png" },
+            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://i.imgur.com/b9iOfp7.png" },
+            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://i.imgur.com/z2HofYp.png" },
+            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://i.imgur.com/R8MscfL.png" },
+            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://i.imgur.com/D4I5e5n.png" },
+            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://i.imgur.com/n67hY8o.png" },
+            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://i.imgur.com/eN61q8N.png" },
             
             // S DEPOIS DA VOGAL (Botão Amarelo)
-            { word: "ESCOVA", display: "E__COVA", type: "after", imgUrl: "https://i.pinimg.com/736x/72/48/04/7248049396491164ed2e7fef48ba767d.jpg" },
-            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://i.pinimg.com/736x/11/04/79/110479615799829176fb977fb797fa91.jpg" },
-            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://i.pinimg.com/736x/86/87/02/868702215622317001407fcf8ee550f2.jpg" },
-            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://i.pinimg.com/736x/89/3f/17/893f173873df1f0449bc9842a5cf387e.jpg" },
-            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://i.pinimg.com/736x/41/ef/5a/41ef5acc03d092040b2fcf3e634ea8be.jpg" },
-            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://i.pinimg.com/736x/00/01/f9/0001f9dca1f54cfdf7b6ec6329043749.jpg" },
-            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://i.pinimg.com/736x/2f/cb/e5/2fcbe56fca554033c467e42dca7e30d1.jpg" },
-            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://i.pinimg.com/736x/14/48/89/144889313007156234f9a0662fe1e905.jpg" }
+            { word: "ESCOVA", display: "E__COVA", type: "after", imgUrl: "https://i.imgur.com/wX43n3n.png" },
+            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://i.imgur.com/C7VvTox.png" },
+            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://i.imgur.com/H1G33Xo.png" },
+            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://i.imgur.com/VOfV5I3.png" },
+            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://i.imgur.com/7gN6gS3.png" },
+            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://i.imgur.com/Y45g3vY.png" },
+            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://i.imgur.com/0iK8v9f.png" },
+            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://i.imgur.com/GisLh8U.png" }
         ];
 
-        // Sorteio aleatório para cada partida ser única
         dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
@@ -247,7 +246,7 @@
         function checkAnswer(selectedType) {
             const currentItem = dataset[currentIndex];
             feedbackBox.classList.remove("hidden");
-            actionButtons.classList.add("hidden");
+            actionButtons.className = "btn-container hidden";
 
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -257,7 +256,6 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">👏</span><span>Muito bem, você arrasou!</span>`;
                 feedbackBox.className = "feedback success";
                 
-                // Som de acerto alegre
                 playTone(audioCtx, 523.25, "sine", 0.1); 
                 setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.1), 100); 
                 setTimeout(() => playTone(audioCtx, 783.99, "sine", 0.3), 200); 
@@ -265,7 +263,6 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
                 
-                // Som de erro triste
                 playTone(audioCtx, 293.66, "triangle", 0.2); 
                 setTimeout(() => playTone(audioCtx, 220.00, "triangle", 0.4), 200); 
             }
