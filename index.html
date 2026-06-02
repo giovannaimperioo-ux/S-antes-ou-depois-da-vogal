@@ -60,12 +60,10 @@
             justify-content: center;
         }
 
-        .game-image {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            border-radius: 12px;
+        .emoji-display {
+            font-size: 100px;
             margin-bottom: 15px;
+            user-select: none;
         }
 
         .word-hint {
@@ -179,7 +177,7 @@
         <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">16</span></div>
         
         <div class="image-container" id="game-box">
-            <img id="game-picture" class="game-image" src="" alt="Pista Visual">
+            <div id="emoji-graphic" class="emoji-display">🐸</div>
             <div class="word-hint" id="word-display">__</div>
         </div>
 
@@ -194,35 +192,36 @@
     </div>
 
     <script>
-        // Imagens hospedadas em servidor livre e sem bloqueio de segurança
+        // Banco de dados 100% autônomo usando Emojis Gigantes que nunca quebram
         const dataset = [
             // S ANTES DA VOGAL (Botão Azul)
-            { word: "SAPO", display: "__APO", type: "before", imgUrl: "https://i.imgur.com/eB399Mv.png" },
-            { word: "SUCO", display: "__UCO", type: "before", imgUrl: "https://i.imgur.com/vHq4R8t.png" },
-            { word: "SETE", display: "__ETE", type: "before", imgUrl: "https://i.imgur.com/b9iOfp7.png" },
-            { word: "SACOLA", display: "__ACOLA", type: "before", imgUrl: "https://i.imgur.com/z2HofYp.png" },
-            { word: "SAPATO", display: "__PATO", type: "before", imgUrl: "https://i.imgur.com/R8MscfL.png" },
-            { word: "SINO", display: "__NO", type: "before", imgUrl: "https://i.imgur.com/D4I5e5n.png" },
-            { word: "SALADA", display: "__ALADA", type: "before", imgUrl: "https://i.imgur.com/n67hY8o.png" },
-            { word: "SORVETE", display: "__ORVETE", type: "before", imgUrl: "https://i.imgur.com/eN61q8N.png" },
+            { word: "SAPO", display: "__APO", type: "before", emoji: "🐸" },
+            { word: "SUCO", display: "__UCO", type: "before", emoji: "🧃" },
+            { word: "SETE", display: "__ETE", type: "before", emoji: "7️⃣" },
+            { word: "SACOLA", display: "__ACOLA", type: "before", emoji: "🛍️" },
+            { word: "SAPATO", display: "__PATO", type: "before", emoji: "👟" },
+            { word: "SINO", display: "__NO", type: "before", emoji: "🔔" },
+            { word: "SALADA", display: "__ALADA", type: "before", emoji: "🥗" },
+            { word: "SORVETE", display: "__ORVETE", type: "before", emoji: "🍦" },
             
             // S DEPOIS DA VOGAL (Botão Amarelo)
-            { word: "ESCOVA", display: "E__COVA", type: "after", imgUrl: "https://i.imgur.com/wX43n3n.png" },
-            { word: "ESCADA", display: "E__CADA", type: "after", imgUrl: "https://i.imgur.com/C7VvTox.png" },
-            { word: "ESPELHO", display: "E__PELHO", type: "after", imgUrl: "https://i.imgur.com/H1G33Xo.png" },
-            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", imgUrl: "https://i.imgur.com/VOfV5I3.png" },
-            { word: "OSSO", display: "O__SO", type: "after", imgUrl: "https://i.imgur.com/7gN6gS3.png" },
-            { word: "OSTRA", display: "O__TRA", type: "after", imgUrl: "https://i.imgur.com/Y45g3vY.png" },
-            { word: "FUSCA", display: "FU__CA", type: "after", imgUrl: "https://i.imgur.com/0iK8v9f.png" },
-            { word: "PASTEL", display: "PA__TEL", type: "after", imgUrl: "https://i.imgur.com/GisLh8U.png" }
+            { word: "ESCOVA", display: "E__COVA", type: "after", emoji: "🪥" },
+            { word: "ESCADA", display: "E__CADA", type: "after", emoji: "🪜" },
+            { word: "ESPELHO", display: "E__PELHO", type: "after", emoji: "🪞" },
+            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", emoji: "🔥" },
+            { word: "OSSO", display: "O__SO", type: "after", emoji: "🦴" },
+            { word: "OSTRA", display: "O__TRA", type: "after", emoji: "🦪" },
+            { word: "FUSCA", display: "FU__CA", type: "after", emoji: "🚗" },
+            { word: "PASTEL", display: "PA__TEL", type: "after", emoji: "🥟" }
         ];
 
+        // Sorteio aleatório para cada partida
         dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
         let score = 0;
 
-        const gamePicture = document.getElementById("game-picture");
+        const emojiGraphic = document.getElementById("emoji-graphic");
         const wordDisplay = document.getElementById("word-display");
         const scoreDisplay = document.getElementById("score");
         const feedbackBox = document.getElementById("feedback-box");
@@ -239,14 +238,14 @@
             actionButtons.classList.remove("hidden");
             
             const currentItem = dataset[currentIndex];
-            gamePicture.src = currentItem.imgUrl;
+            emojiGraphic.innerText = currentItem.emoji;
             wordDisplay.innerText = currentItem.display;
         }
 
         function checkAnswer(selectedType) {
             const currentItem = dataset[currentIndex];
             feedbackBox.classList.remove("hidden");
-            actionButtons.className = "btn-container hidden";
+            actionButtons.classList.add("hidden");
 
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -256,6 +255,7 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">👏</span><span>Muito bem, você arrasou!</span>`;
                 feedbackBox.className = "feedback success";
                 
+                // Som de acerto alegre
                 playTone(audioCtx, 523.25, "sine", 0.1); 
                 setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.1), 100); 
                 setTimeout(() => playTone(audioCtx, 783.99, "sine", 0.3), 200); 
@@ -263,6 +263,7 @@
                 feedbackBox.innerHTML = `<span class="emoji-anim">😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
                 
+                // Som de erro triste
                 playTone(audioCtx, 293.66, "triangle", 0.2); 
                 setTimeout(() => playTone(audioCtx, 220.00, "triangle", 0.4), 200); 
             }
