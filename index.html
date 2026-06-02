@@ -1,0 +1,336 @@
+# Escrevendo o código HTML completo para o jogo interativo do Lucas
+html_content = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Detetive: O Segredo do S</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            border: 4px solid #1e3a8a;
+        }
+
+        h1 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        .score-board {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4b5563;
+            margin-bottom: 20px;
+            background-color: #e0f2fe;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .image-container {
+            background-color: #f8fafc;
+            border: 3px dashed #cbd5e1;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .svg-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 10px;
+        }
+
+        .word-hint {
+            font-size: 22px;
+            font-weight: bold;
+            color: #334155;
+            letter-spacing: 2px;
+        }
+
+        .btn-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 480px) {
+            .btn-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 18px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-after {
+            background-color: #2563eb; /* Azul */
+        }
+
+        .btn-after:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-before {
+            background-color: #16a34a; /* Verde */
+        }
+
+        .btn-before:hover {
+            background-color: #15803d;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 30px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .success {
+            color: #15803d;
+            background-color: #dcfce7;
+        }
+
+        .error {
+            color: #b91c1c;
+            background-color: #fee2e2;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .restart-btn {
+            background-color: #4b5563;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>🕵️‍♂️ DETETIVE LUCAS: O SEGREDO DO S</h1>
+        <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">10</span></div>
+        
+        <div class="image-container" id="game-box">
+            <div id="image-graphic"></div>
+            <div class="word-hint" id="word-display">__TA</div>
+        </div>
+
+        <div class="btn-container" id="action-buttons">
+            <button class="btn btn-after" onclick="checkAnswer('after')">🟦 S DEPOIS da Vogal<br><small>(AS, ES, IS, OS, US)</small></button>
+            <button class="btn btn-before" onclick="checkAnswer('before')">🟩 S ANTES da Vogal<br><small>(SA, SE, SI, SO, SU)</small></button>
+        </div>
+
+        <div id="feedback-box" class="feedback hidden"></div>
+        <button id="next-btn" class="restart-btn hidden" onclick="nextQuestion()">Próxima Pista ➡️</button>
+        <button id="restart-btn" class="restart-btn hidden" onclick="resetGame()">Jogar Novamente 🔄</button>
+    </div>
+
+    <script>
+        // Banco de dados de imagens em formato SVG para funcionar 100% offline e sem links quebrados
+        const dataset = [
+            {
+                word: "ESTRELA",
+                display: "__TRELA",
+                type: "after",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#facc15"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192L12 .587z"/></svg>`
+            },
+            {
+                word: "SAPO",
+                display: "__PO",
+                type: "before",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#22c55e"><path d="M12 2c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l2.79-2.79C10.03 18.64 11 19 12 19s1.97-.36 2.45-.98l2.79 2.79c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-.62-2.79C19.26 15.07 20 13.12 20 11c0-4.97-4.03-9-9-9zm-3 7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>`
+            },
+            {
+                word: "ESCADA",
+                display: "__CADA",
+                type: "after",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#94a3b8"><path d="M19 2h-3v3h-3v3h-3v3H7v3H4v5h16V2h-1zm-2 14h-3v-3h3v3zm-3-3h-3v-3h3v3zm-3-3H8V8h3v3z"/></svg>`
+            },
+            {
+                word: "SINO",
+                display: "__NO",
+                type: "before",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#eab308"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>`
+            },
+            {
+                word: "ASTRO",
+                display: "__TRO",
+                type: "after",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm1-15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-1 3a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1z"/></svg>`
+            },
+            {
+                word: "SOCO",
+                display: "__CO",
+                type: "before",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#f43f5e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`
+            },
+            {
+                word: "ESPELHO",
+                display: "__PELHO",
+                type: "after",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>`
+            },
+            {
+                word: "SUCO",
+                display: "__CO",
+                type: "before",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#f97316"><path d="M10 21.008c0 .548.448.992 1 .992h2c.552 0 1-.444 1-.992V11h-4v10.008zM19.657 4.11L17.55 3.42l-1.38 4.24-4.24-1.38-.69 2.11 4.24 1.38-1.38 4.24 2.11.69 1.38-4.24 4.24 1.38.69-2.11-4.24-1.38 1.38-4.24z"/></svg>`
+            },
+            {
+                word: "ISQUEIRO",
+                display: "__QUEIRO",
+                type: "after",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#ef4444"><path d="M17 10H7v11c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V10zm-3-6h-4c-.55 0-1 .45-1 1v3h6V5c0-.55-.45-1-1-1z"/></svg>`
+            },
+            {
+                word: "SOFÁ",
+                display: "__FÁ",
+                type: "before",
+                svg: `<svg class="svg-icon" viewBox="0 0 24 24" fill="#78350f"><path d="M22 10V7c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v3c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2z"/></svg>`
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        const imageGraphic = document.getElementById("image-graphic");
+        const wordDisplay = document.getElementById("word-display");
+        const scoreDisplay = document.getElementById("score");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const actionButtons = document.getElementById("action-buttons");
+        const totalRoundsDisplay = document.getElementById("total-rounds");
+
+        totalRoundsDisplay.innerText = dataset.length;
+
+        function loadQuestion() {
+            feedbackBox.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            actionButtons.classList.remove("hidden");
+            
+            const currentItem = dataset[currentIndex];
+            imageGraphic.innerHTML = currentItem.svg;
+            wordDisplay.innerText = currentItem.display;
+        }
+
+        function checkAnswer(selectedType) {
+            const currentItem = dataset[currentIndex];
+            feedbackBox.classList.remove("hidden");
+            actionButtons.classList.add("hidden");
+
+            // Efeito de Áudio nativo do navegador para o Lucas ter feedback sensorial instantâneo
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            if (selectedType === currentItem.type) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackBox.innerText = `🎉 Excelente, Detetive Lucas! A palavra é ${currentItem.word}.`;
+                feedbackBox.className = "feedback success";
+                
+                // Som de acerto (agudo e alegre)
+                playTone(audioCtx, 523.25, "sine", 0.15); // C5
+                setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.3), 150); // E5
+            } else {
+                feedbackBox.innerText = `🔍 Quase lá! O correto para ${currentItem.word} é o S ${currentItem.type === 'after' ? 'DEPOIS' : 'ANTES'} da vogal.`;
+                feedbackBox.className = "feedback error";
+                
+                // Som de erro (grave e curto)
+                playTone(audioCtx, 220, "sawtooth", 0.3); // A3
+            }
+
+            if (currentIndex < dataset.length - 1) {
+                nextBtn.classList.remove("hidden");
+            } else {
+                restartBtn.classList.remove("hidden");
+                feedbackBox.innerText += `\n\n🏆 Fim da Missão! Você desvendou ${score} de ${dataset.length} pistas!`;
+            }
+        }
+
+        function playTone(ctx, freq, type, duration) {
+            try {
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            loadQuestion();
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            scoreDisplay.innerText = score;
+            restartBtn.classList.add("hidden");
+            loadQuestion();
+        }
+
+        // Inicializa o jogo do Lucas
+        loadQuestion();
+    </script>
+</body>
+</html>
+"""
+
+# Gravando o arquivo HTML no sistema local para disponibilização
+file_name = "Missao_Detetive_Lucas_S.html"
+with open(file_name, "w", encoding="utf-8") as f:
+    f.write(html_content)
+print(f"Arquivo {file_name} gerado com sucesso!")
