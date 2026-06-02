@@ -172,6 +172,10 @@
 </head>
 <body>
 
+    <!-- Elementos invisíveis de áudio real -->
+    <audio id="sound-success" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-84.wav" preload="auto"></audio>
+    <audio id="sound-error" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav" preload="auto"></audio>
+
     <div class="game-container">
         <h1>🕵️‍♂️ DETETIVE LUCAS: MISSÃO S</h1>
         <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">16</span></div>
@@ -192,7 +196,6 @@
     </div>
 
     <script>
-        // Banco de dados 100% autônomo usando Emojis Gigantes que nunca quebram
         const dataset = [
             // S ANTES DA VOGAL (Botão Azul)
             { word: "SAPO", display: "__APO", type: "before", emoji: "🐸" },
@@ -215,7 +218,6 @@
             { word: "PASTEL", display: "PA__TEL", type: "after", emoji: "🥟" }
         ];
 
-        // Sorteio aleatório para cada partida
         dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
@@ -229,6 +231,10 @@
         const restartBtn = document.getElementById("restart-btn");
         const actionButtons = document.getElementById("action-buttons");
         const totalRoundsDisplay = document.getElementById("total-rounds");
+
+        // Elementos de áudio
+        const audioSuccess = document.getElementById("sound-success");
+        const audioError = document.getElementById("sound-error");
 
         totalRoundsDisplay.innerText = dataset.length;
 
@@ -247,25 +253,26 @@
             feedbackBox.classList.remove("hidden");
             actionButtons.classList.add("hidden");
 
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
             if (selectedType === currentItem.type) {
                 score++;
                 scoreDisplay.innerText = score;
-                feedbackBox.innerHTML = `<span class="emoji-anim">👏</span><span>Muito bem, você arrasou!</span>`;
+                feedbackBox.innerHTML = `<span class="emoji-anim">🙌👏</span><span>Muito bem, você arrasou!</span>`;
                 feedbackBox.className = "feedback success";
                 
-                // Som de acerto alegre
-                playTone(audioCtx, 523.25, "sine", 0.1); 
-                setTimeout(() => playTone(audioCtx, 659.25, "sine", 0.1), 100); 
-                setTimeout(() => playTone(audioCtx, 783.99, "sine", 0.3), 200); 
+                // Toca som de comemoração real
+                try {
+                    audioSuccess.currentTime = 0;
+                    audioSuccess.play();
+                } catch(e) {}
             } else {
                 feedbackBox.innerHTML = `<span class="emoji-anim">😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
                 
-                // Som de erro triste
-                playTone(audioCtx, 293.66, "triangle", 0.2); 
-                setTimeout(() => playTone(audioCtx, 220.00, "triangle", 0.4), 200); 
+                // Toca som de erro real
+                try {
+                    audioError.currentTime = 0;
+                    audioError.play();
+                } catch(e) {}
             }
 
             if (currentIndex < dataset.length - 1) {
@@ -274,21 +281,6 @@
                 restartBtn.classList.remove("hidden");
                 feedbackBox.innerHTML += `<br><br>🏆 <strong>Fim da Investigação!</strong> Você acertou ${score} de ${dataset.length} pistas!`;
             }
-        }
-
-        function playTone(ctx, freq, type, duration) {
-            try {
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + duration);
-            } catch(e) {}
         }
 
         function nextQuestion() {
