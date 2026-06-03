@@ -60,17 +60,12 @@
             justify-content: center;
         }
 
-        .emoji-display {
-            font-size: 100px;
-            margin-bottom: 15px;
-            user-select: none;
-        }
-
         .word-hint {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             color: #ffffff;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
+            margin-top: 15px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
@@ -144,8 +139,10 @@
             border: 2px solid #b91c1c;
         }
 
-        .emoji-anim {
-            font-size: 44px;
+        .emoji-large {
+            font-size: 90px;
+            line-height: 1;
+            margin-bottom: 10px;
         }
 
         .hidden {
@@ -164,10 +161,6 @@
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-
-        .action-btn:hover {
-            background-color: #dc2626;
-        }
     </style>
 </head>
 <body>
@@ -177,8 +170,8 @@
         <div class="score-board">⭐ Pistas Desvendadas: <span id="score">0</span> / <span id="total-rounds">16</span></div>
         
         <div class="image-container" id="game-box">
-            <div id="emoji-graphic" class="emoji-display">🐸</div>
-            <div class="word-hint" id="word-display">__</div>
+            <div id="visual-target" class="emoji-large"></div>
+            <div class="word-hint" id="word-display"></div>
         </div>
 
         <div class="btn-container" id="action-buttons">
@@ -192,50 +185,38 @@
     </div>
 
     <script>
-        // Banco de dados autônomo com emojis universais e estáveis
+        // Banco de dados usando textos em formato puro de texto para evitar erros de servidores
         const dataset = [
-            // S ANTES DA VOGAL (Botão Azul)
-            { word: "SAPO", display: "__APO", type: "before", emoji: "🐸" },
-            { word: "SUCO", display: "__UCO", type: "before", emoji: "🧃" },
-            { word: "SETE", display: "__ETE", type: "before", emoji: "7️⃣" },
-            { word: "SACOLA", display: "__ACOLA", type: "before", emoji: "🛍️" },
-            { word: "SAPATO", display: "__PATO", type: "before", emoji: "Sneakers" },
-            { word: "SINO", display: "__NO", type: "before", emoji: "🔔" },
-            { word: "SALADA", display: "__ALADA", type: "before", emoji: "🥗" },
-            { word: "SORVETE", display: "__ORVETE", type: "before", emoji: "🍦" },
-            
-            // S DEPOIS DA VOGAL (Botão Amarelo) - Emojis atualizados para máxima compatibilidade
-            { word: "ESCOVA", display: "E__COVA", type: "after", emoji: "🪥" },
-            { word: "ESCADA", display: "E__CADA", type: "after", emoji: "🪜" },
-            { word: "ESPELHO", display: "E__PELHO", type: "after", emoji: "🪞" },
-            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", emoji: "🔥" },
-            { word: "OSSO", display: "O__SO", type: "after", emoji: "🦴" },
-            { word: "OSTRA", display: "O__TRA", type: "after", emoji: "🦪" },
-            { word: "FUSCA", display: "FU__CA", type: "after", emoji: "🚗" },
-            { word: "PASTEL", display: "PA__TEL", type: "after", emoji: " dumpling " }
+            { word: "SAPO", display: "__APO", type: "before", icon: "🐸" },
+            { word: "SUCO", display: "__UCO", type: "before", icon: "🧃" },
+            { word: "SETE", display: "__ETE", type: "before", icon: "7️⃣" },
+            { word: "SACOLA", display: "__ACOLA", type: "before", icon: "🛍️" },
+            { word: "SAPATO", display: "__PATO", type: "before", icon: "👟" },
+            { word: "SINO", display: "__NO", type: "before", icon: "🔔" },
+            { word: "SALADA", display: "__ALADA", type: "before", icon: "🥗" },
+            { word: "SORVETE", display: "__ORVETE", type: "before", icon: "🍦" },
+            { word: "ESCOVA", display: "E__COVA", type: "after", icon: "🪥" },
+            { word: "ESCADA", display: "E__CADA", type: "after", icon: "🪜" },
+            { word: "ESPELHO", display: "E__PELHO", type: "after", icon: "🪞" },
+            { word: "ISQUEIRO", display: "I__QUEIRO", type: "after", icon: "🔥" },
+            { word: "OSSO", display: "O__SO", type: "after", icon: "🦴" },
+            { word: "OSTRA", display: "O__TRA", type: "after", icon: "🦪" },
+            { word: "FUSCA", display: "FU__CA", type: "after", icon: "🚗" },
+            { word: "PASTEL", display: "PA__TEL", type: "after", icon: "🥟" }
         ];
-
-        // Correção de compatibilidade fina para garantir visualização em qualquer aparelho antigo
-        dataset.forEach(item => {
-            if(item.emoji === "Sneakers") item.emoji = "👟";
-            if(item.emoji === " dumpling ") item.emoji = "🥟";
-        });
 
         dataset.sort(() => Math.random() - 0.5);
 
         let currentIndex = 0;
         let score = 0;
 
-        const emojiGraphic = document.getElementById("emoji-graphic");
+        const visualTarget = document.getElementById("visual-target");
         const wordDisplay = document.getElementById("word-display");
         const scoreDisplay = document.getElementById("score");
         const feedbackBox = document.getElementById("feedback-box");
         const nextBtn = document.getElementById("next-btn");
         const restartBtn = document.getElementById("restart-btn");
         const actionButtons = document.getElementById("action-buttons");
-        const totalRoundsDisplay = document.getElementById("total-rounds");
-
-        totalRoundsDisplay.innerText = dataset.length;
 
         function loadQuestion() {
             feedbackBox.classList.add("hidden");
@@ -243,57 +224,42 @@
             actionButtons.classList.remove("hidden");
             
             const currentItem = dataset[currentIndex];
-            emojiGraphic.innerText = currentItem.emoji;
+            visualTarget.innerText = currentItem.icon;
             wordDisplay.innerText = currentItem.display;
         }
 
-        // Sintetizador interno para gerar som de comemoração e erro direto no aparelho
-        function playInternalSound(isSuccess) {
+        // Sistema de som reconstruído para tocar obrigatoriamente sem depender de arquivos
+        function playSoundEffect(isCorrect) {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                const ctx = new AudioContext();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 
-                if (isSuccess) {
-                    // Som de Sucesso (Duas notas rápidas e agudas ascendentes)
-                    let osc1 = ctx.createOscillator();
-                    let osc2 = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    
-                    osc1.type = 'sine';
-                    osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // Ré
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(880.00, ctx.currentTime + 0.08); // Lá agudo
-                    
-                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.35);
-                    
-                    osc1.connect(gain);
-                    osc2.connect(gain);
-                    gain.connect(ctx.destination);
-                    
-                    osc1.start(ctx.currentTime);
-                    osc1.stop(ctx.currentTime + 0.08);
-                    osc2.start(ctx.currentTime + 0.08);
-                    osc2.stop(ctx.currentTime + 0.35);
-                } else {
-                    // Som de ops/erro (Grave e descendente sutil)
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(220, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(130, ctx.currentTime + 0.25);
-                    
-                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.25);
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (isCorrect) {
+                    // Som de acerto (Alegre e agudo)
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
                     osc.start();
-                    osc.stop(ctx.currentTime + 0.25);
+                    osc.stop(audioCtx.currentTime + 0.2);
+                } else {
+                    // Som de erro (Grave e baixo)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.log("Áudio não suportado");
+            }
         }
 
         function checkAnswer(selectedType) {
@@ -304,20 +270,20 @@
             if (selectedType === currentItem.type) {
                 score++;
                 scoreDisplay.innerText = score;
-                feedbackBox.innerHTML = `<span class="emoji-anim">🙌👏</span><span>Muito bem, você arrasou!</span>`;
+                feedbackBox.innerHTML = `<span>👏 Muito bem, você arrasou!</span>`;
                 feedbackBox.className = "feedback success";
-                playInternalSound(true);
+                playSoundEffect(true);
             } else {
-                feedbackBox.innerHTML = `<span class="emoji-anim">😢</span><span>ops, não foi dessa vez, pense mais um pouco!</span>`;
+                feedbackBox.innerHTML = `<span>😢 ops, não foi dessa vez, pense mais um pouco!</span>`;
                 feedbackBox.className = "feedback error";
-                playInternalSound(false);
+                playSoundEffect(false);
             }
 
             if (currentIndex < dataset.length - 1) {
                 nextBtn.classList.remove("hidden");
             } else {
                 restartBtn.classList.remove("hidden");
-                feedbackBox.innerHTML += `<br><br>🏆 <strong>Fim da Investigação!</strong> Você acertou ${score} de ${dataset.length} pistas!`;
+                feedbackBox.innerHTML += `<br><br>🏆 <strong>Fim do Jogo!</strong> Você acertou ${score} de ${dataset.length}!`;
             }
         }
 
